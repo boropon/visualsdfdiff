@@ -1,0 +1,108 @@
+	if (tdWid > 0 && tdHeight > 0)
+	{
+		if (document.all)
+		{
+			document.all.tmain.style.width = tableWid + 'px';
+			document.all.t11.style.width = tdWid + 'px';
+			document.all.t12.style.width = tdWid + 'px';
+			document.all.d11.style.width = tdWid + 'px';
+			document.all.d12.style.width = tdWid + 'px';
+			document.all.d21.style.height = tableHeight + 'px';
+			document.all.d22.style.height = tableHeight + 'px';
+			document.all.d21.style.width = tdWid + 'px';
+			document.all.d22.style.width = tdWid + 'px';
+		}
+		else
+		{
+			document.getElementById("tmain").style.width = tableWid + 'px';
+			document.getElementById("t11").style.width = tdWid + 'px';
+			document.getElementById("t12").style.width = tdWid + 'px';
+			document.getElementById("d11").style.width = tdWid + 'px';
+			document.getElementById("d12").style.width = tdWid + 'px';
+			document.getElementById("d21").style.height = tableHeight + 'px';
+			document.getElementById("d22").style.height = tableHeight + 'px';
+			document.getElementById("d21").style.width = tdWid + 'px';
+			document.getElementById("d22").style.width = tdWid + 'px';
+		}
+	}
+	if (navigator.userAgent.indexOf("Opera") != -1)
+	{
+		// for sync scrolling
+		window.setInterval("poll()",100);
+	}
+}
+
+function populate_combobox(numdiffs)
+{
+	var combobox = document.getElementById('currentdiff');
+	for(i=1;i<=numdiffs;i+=1)
+	{
+		combobox.options[i] = new Option("Diff #"+i,i);
+	}
+}
+
+function goto(diff)
+{
+	var combobox = document.getElementById('currentdiff');
+	if (diff > 0 && diff < combobox.options.length)
+	{
+		combobox.selectedIndex = diff;
+		window.location.href = "#D" + diff;
+	}
+}
+
+function first()
+{
+	var combobox = document.getElementById('currentdiff');
+	var diff = 1;
+	goto(1);
+}
+function previous()
+{
+	var combobox = document.getElementById('currentdiff');
+	var diff = combobox.selectedIndex;
+	if (diff > 1)
+		diff--;
+	goto(diff);
+}
+function next()
+{
+	var combobox = document.getElementById('currentdiff');
+	var diff = combobox.selectedIndex;
+	if (combobox.options.length - 1 > diff)
+		diff++;
+	goto(diff);
+}
+function last()
+{
+	var combobox = document.getElementById('currentdiff');
+	var diff = combobox.options.length - 1;
+	goto(diff);
+}
+function change()
+{
+	var combobox = document.getElementById('currentdiff');
+	var diff = combobox.selectedIndex;
+	goto(diff);
+}
+
+</script>
+</head>
+<body onload="onLoad()">
+<table id="tmain" style="border: 2px solid #000000; " cellpadding="2">
+	<tr valign="top">
+		<td>
+			<table id="t1">
+				<tr valign="top">
+					<td id="t11" style="border: 1px solid #000000"><div id="d11" style="background-color: #C0C0C0;  overflow: hidden;" title="変更前"><b>変更前</b></div></td>
+					<td id="t12" style="border: 1px solid #000000"><div id="d12" style="background-color: #C0C0C0;  overflow: hidden;" title="変更後"><b>変更後</b></div></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+			<table id="t2">
+				<tr valign="top">
+					<td id="t21" style="border: 1px solid #000000">
+<div id="d21" style="overflow: scroll;  " onscroll="synchScroll(1)">

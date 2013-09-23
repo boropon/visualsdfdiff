@@ -1,0 +1,41 @@
+</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td>
+			<table width="100%">
+				<tr valign="top">
+					<td>
+						<table id="t3">
+							<tr valign="top">
+								<td><div><b>Legend:</b></div></td><td><div class="added">追加(5+49)</div></td><td><div class="deleted">削除(1+150)</div></td><td><div class="changed">変更(19)</div></td><td><div class="changed2">変更中の変更words (8)</div></td>
+							</tr>
+						</table>
+					</td>
+					<!-- $NAV_BAR_BEGIN$ -->
+					<td align="right">
+						<table>
+							<tr>
+								<td><input type="button" value="<<" onclick="first()" title="First Difference"/></td>
+								<td><input type="button" value="<" onclick="previous()" title="Previous Difference"/></td>
+								<td>
+									<select align="top" id="currentdiff" size="1" style="width: 70pt;" onchange="change()">
+										<option selected id="1" value="0">Select Diff</option>
+									</select>
+								</td>
+								<td><input type="button" value=">" onclick="next()" title="Next Difference"/></td>
+								<td><input type="button" value=">>" onclick="last()" title="Last Difference"/></td>
+							</tr>
+						</table>
+					</td>
+					<!-- $NAV_BAR_END$ -->
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</body>
+</html>
