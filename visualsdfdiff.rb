@@ -1,3 +1,5 @@
+require 'nkf'
+
 class ResultHTML
 	
 	def initialize()
@@ -18,7 +20,7 @@ class ResultHTML
 	# HTMLファイルの定型部分を書き込む
 	# 引数には定型部分を書き込んだファイル名を渡す
 	def putPhrase(phraseFilename)
-		phraseFile = open(phraseFilename, "r")
+		phraseFile = open(File::dirname(__FILE__)+"/"+phraseFilename, "r")
 		phraseFile.each_line { |line|
 			@outputFile.puts(line)
 		}
@@ -40,26 +42,27 @@ class ResultHTML
 	# Diffの内容をHTMLファイルに書き込む
 	# typeには上記定義を使用する
 	def putBody(str, type)
+		utfstr = NKF::nkf('-w', str)
 		if type == BODY_IDENTICAL
-			@outputFile.puts('<div class="linespan_i"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;">'+@srcLinenum.to_s+'</span><span class="identical">'+str+'</span></div>')
+			@outputFile.puts('<div class="linespan_i"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;">'+@srcLinenum.to_s+'</span><span class="identical">'+utfstr+'</span></div>')
 			@srcLinenum += 1
 		elsif type == BODY_CHANGED
-			@outputFile.puts('<div class="linespan_c"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;">'+@srcLinenum.to_s+'</span><span class="changed">'+str+'</span><span class="changed"></span></div>')
+			@outputFile.puts('<div class="linespan_c"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;">'+@srcLinenum.to_s+'</span><span class="changed">'+utfstr+'</span><span class="changed"></span></div>')
 			@srcLinenum += 1
 		elsif type == BODY_ADDED
-			@outputFile.puts('<div class="linespan_a"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;">'+@srcLinenum.to_s+'</span><span class="added">'+str+'</span></div>')
+			@outputFile.puts('<div class="linespan_a"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;">'+@srcLinenum.to_s+'</span><span class="added">'+utfstr+'</span></div>')
 			@srcLinenum += 1
 		elsif type == BODY_DELETED
-			@outputFile.puts('<div class="linespan_c"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;">'+@srcLinenum.to_s+'</span><span class="deleted">'+str+'</span><span class="changed"></span></div>')
+			@outputFile.puts('<div class="linespan_c"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;">'+@srcLinenum.to_s+'</span><span class="deleted">'+utfstr+'</span><span class="changed"></span></div>')
 			@srcLinenum += 1
 		elsif type == BODY_IDENTICAL_BLANK
-			@outputFile.puts('<div class="linespan_i"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;"></span><span class="identical">'+str+'</span></div>')
+			@outputFile.puts('<div class="linespan_i"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;"></span><span class="identical">'+utfstr+'</span></div>')
 		elsif type == BODY_CHANGED_BLANK
-			@outputFile.puts('<div class="linespan_c"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;"></span><span class="changed">'+str+'</span><span class="changed"></span></div>')
+			@outputFile.puts('<div class="linespan_c"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;"></span><span class="changed">'+utfstr+'</span><span class="changed"></span></div>')
 		elsif type == BODY_ADDED_BLANK
-			@outputFile.puts('<div class="linespan_a"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;"></span><span class="added">'+str+'</span></div>')
+			@outputFile.puts('<div class="linespan_a"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;"></span><span class="added">'+utfstr+'</span></div>')
 		elsif type == BODY_DELETED_BLANK
-			@outputFile.puts('<div class="linespan_c"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;"></span><span class="deleted">'+str+'</span><span class="changed"></span></div>')
+			@outputFile.puts('<div class="linespan_c"><span style="color:#808080; background-color:#F8F8F8; border-right-width:2px; border-right-style:groove; border-right-color:#E0E0E0;"></span><span class="deleted">'+utfstr+'</span><span class="changed"></span></div>')
 		end
 	end
 	
@@ -93,7 +96,7 @@ resultHTML.putPhrase("phrasetop2.txt")
 # 変更前のソースコードの処理
 #
 diffFile.seek(0, IO::SEEK_SET)
-srcLineNum=1
+srcLineNum = 1
 diffFile.each_line { |line|
 	if line =~ /^[1-9]+/
 		if line =~ /[acd]/
@@ -125,7 +128,7 @@ diffFile.each_line { |line|
 
 			if diffType == "a" #addの場合
 				while srcLineNum <= diffDstLineNum
-					resultHTML.putBody(line, ResultHTML::BODY_IDENTICAL)
+					resultHTML.putBody(srcFile.gets, ResultHTML::BODY_IDENTICAL)
 					srcLineNum += 1
 				end
 				
@@ -144,7 +147,9 @@ diffFile.each_line { |line|
 				resultHTML.putTag()
 				i = 0
 				while i < diffSrcLineCount
-					resultHTML.putBody(diffFile.gets, ResultHTML::BODY_DELETED)
+					srcStrFromDiff = diffFile.gets
+					srcStrFromDiff.slice!(0, 2)
+					resultHTML.putBody(srcStrFromDiff, ResultHTML::BODY_DELETED)
 					i += 1
 				end
 			elsif diffType == "c" #changeの場合
@@ -156,7 +161,9 @@ diffFile.each_line { |line|
 				resultHTML.putTag()
 				i = 0
 				while i < diffSrcLineCount
-					resultHTML.putBody(diffFile.gets, ResultHTML::BODY_CHANGED)
+					srcStrFromDiff = diffFile.gets
+					srcStrFromDiff.slice!(0, 2)
+					resultHTML.putBody(srcStrFromDiff, ResultHTML::BODY_CHANGED)
 					i += 1
 				end
 				srcLineNum += diffDstLineCount
@@ -188,6 +195,9 @@ resultHTML.resetLineNum
 #
 srcFile.seek(0, IO::SEEK_SET)
 diffFile.seek(0, IO::SEEK_SET)
+addCount = 0
+delCount = 0
+chgCount = 0
 srcLineNum=1
 diffFile.each_line { |line|
 	if line =~ /^[1-9]+/
@@ -220,16 +230,17 @@ diffFile.each_line { |line|
 
 			if diffType == "a" #addの場合
 				while srcLineNum <= diffDstLineNum
-					resultHTML.putBody(line, ResultHTML::BODY_IDENTICAL)
+					resultHTML.putBody(srcFile.gets, ResultHTML::BODY_IDENTICAL)
 					srcLineNum += 1
 				end
 				
 				resultHTML.putTag()
 				i = 0
 				while i < diffDstLineCount
-					resultHTML.putBody(line, ResultHTML::BODY_ADDED)
+					resultHTML.putBody(srcFile.gets, ResultHTML::BODY_ADDED)
 					i += 1
 				end
+				addCount += i
 			elsif diffType == "d" #deleteの場合
 				while srcLineNum <= diffDstLineNum
 					resultHTML.putBody(srcFile.gets, ResultHTML::BODY_IDENTICAL)
@@ -242,6 +253,7 @@ diffFile.each_line { |line|
 					resultHTML.putBody("", ResultHTML::BODY_DELETED_BLANK)
 					i += 1
 				end
+				delCount += i
 			elsif diffType == "c" #changeの場合
 				while srcLineNum < diffDstLineNum
 					resultHTML.putBody(srcFile.gets, ResultHTML::BODY_IDENTICAL)
@@ -254,6 +266,7 @@ diffFile.each_line { |line|
 					resultHTML.putBody(srcFile.gets, ResultHTML::BODY_CHANGED)
 					i += 1
 				end
+				chgCount += i
 				srcLineNum += diffDstLineCount
 				if diffDstLineCount < diffSrcLineCount
 					i = 0
@@ -261,6 +274,7 @@ diffFile.each_line { |line|
 						resultHTML.putBody("", ResultHTML::BODY_CHANGED_BLANK)
 						i += 1
 					end
+					chgCount += i
 				end
 			end
 		end
@@ -273,5 +287,7 @@ srcFile.each_line { |line|
 srcFile.close
 diffFile.close
 
-resultHTML.putPhrase("phrasebottom.txt")
+resultHTML.putPhrase("phrasebottom1.txt")
+resultHTML.putPhraseString("<td><div><b>Summary:</b></div></td><td><div class=\"added\">ADD("+addCount.to_s+")</div></td><td><div class=\"deleted\">DELETE("+delCount.to_s+")</div></td><td><div class=\"changed\">CHANGE("+chgCount.to_s+")</div></td>")
+resultHTML.putPhrase("phrasebottom2.txt")
 resultHTML.closeFile()
