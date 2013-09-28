@@ -89,6 +89,10 @@ diffFile.each_line { |line|
 		diffNum += 1
 	end
 }
+
+#
+resultHTML.putPhrase("phrasetop0.txt")
+resultHTML.putPhraseString("<title>"+File.basename(ARGV[0])+"</title>")
 resultHTML.putPhrase("phrasetop1.txt")
 resultHTML.putPhraseString("populate_combobox("+diffNum.to_s+");")
 resultHTML.putPhrase("phrasetop2.txt")
@@ -127,7 +131,7 @@ diffFile.each_line { |line|
 			#resultHTML.putBody("diffDstLineNum = " + diffDstLineNum.to_s, ResultHTML::BODY_IDENTICAL)
 
 			if diffType == "a" #add�̏ꍇ
-				while srcLineNum <= diffDstLineNum
+				while srcLineNum < diffDstLineNum
 					resultHTML.putBody(srcFile.gets, ResultHTML::BODY_IDENTICAL)
 					srcLineNum += 1
 				end
@@ -136,6 +140,8 @@ diffFile.each_line { |line|
 				i = 0
 				while i < diffDstLineCount
 					resultHTML.putBody("", ResultHTML::BODY_ADDED_BLANK)
+					srcFile.gets
+					srcLineNum += 1
 					i += 1
 				end
 			elsif diffType == "d" #delete�̏ꍇ
@@ -166,10 +172,10 @@ diffFile.each_line { |line|
 					resultHTML.putBody(srcStrFromDiff, ResultHTML::BODY_CHANGED)
 					i += 1
 				end
-				srcLineNum += diffDstLineCount
 				i = 0
 				while i < diffDstLineCount
 					srcFile.gets
+					srcLineNum += 1
 					i += 1
 				end
 				if diffSrcLineCount < diffDstLineCount
@@ -229,7 +235,7 @@ diffFile.each_line { |line|
 			#resultHTML.putBody("diffDstLineNum = " + diffDstLineNum.to_s, ResultHTML::BODY_IDENTICAL)
 
 			if diffType == "a" #add�̏ꍇ
-				while srcLineNum <= diffDstLineNum
+				while srcLineNum < diffDstLineNum
 					resultHTML.putBody(srcFile.gets, ResultHTML::BODY_IDENTICAL)
 					srcLineNum += 1
 				end
@@ -238,6 +244,7 @@ diffFile.each_line { |line|
 				i = 0
 				while i < diffDstLineCount
 					resultHTML.putBody(srcFile.gets, ResultHTML::BODY_ADDED)
+					srcLineNum += 1
 					i += 1
 				end
 				addCount += i
@@ -264,10 +271,10 @@ diffFile.each_line { |line|
 				i = 0
 				while i < diffDstLineCount
 					resultHTML.putBody(srcFile.gets, ResultHTML::BODY_CHANGED)
+					srcLineNum += 1
 					i += 1
 				end
 				chgCount += i
-				srcLineNum += diffDstLineCount
 				if diffDstLineCount < diffSrcLineCount
 					i = 0
 					while i < diffSrcLineCount - diffDstLineCount

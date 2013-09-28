@@ -1,8 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VisualSDFDiff</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <style type="text/css">
 body {font-family: Lucida Console; font-size:13px; font-style: normal; font-weight:400; background-color:#C0C0C0;}
